@@ -4,6 +4,7 @@ import BootstrapVue from 'bootstrap-vue/dist/bootstrap-vue.esm';
 import Vue from 'vue';
 import App from './App';
 import router from './router';
+import * as xml from './utils/xml';
 
 Vue.config.productionTip = false;
 Vue.use(BootstrapVue);
