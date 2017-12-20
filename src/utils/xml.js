@@ -1,4 +1,4 @@
-export function attr(node, key, defaultValue = undefined) {
+export default function attr(node, key, defaultValue = undefined) {
   if (!node) {
     return defaultValue;
   }

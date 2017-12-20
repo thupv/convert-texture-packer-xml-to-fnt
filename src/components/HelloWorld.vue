@@ -37,7 +37,20 @@
 
 <script>
   import * as xml from '../utils/xml';
-
+  import * as StringUtils from '../utils/str';
+  const BASE_FNT = `<font>
+            <info face="{faceName}" size="63" bold="0" italic="0" charset="" unicode="" stretchH="100" smooth="1" aa="1" padding="0,0,0,0" spacing="0,0" outline="0"/>
+            <common lineHeight="{height}" base="{base}" scaleW="{width}" scaleH="{height}" pages="1" packed="0"/>
+            <pages>
+              <page id="0" file="{fileName}"/>
+            </pages>
+            <chars count="{counter}">
+            {listChar}
+            </chars>
+            <kernings count="1">
+              <kerning first="49" second="49" amount="-2"/>
+            </kernings>
+          </font>`;
   export default {
     name: 'HelloWorld',
     data() {
@@ -58,35 +71,36 @@
         let height = xml.attr(textureAtlas, 'height');
         let sprites = textureAtlas.querySelectorAll('sprite');
         let spritesData = [];
+        let output = BASE_FNT;
+        let listChar = ``;
         sprites.forEach((sprite)=>{
           let spriteData = {
             name: xml.attr(sprite, 'n'),
-            x: xml.attr(sprite, 'x'),
-            y: xml.attr(sprite, 'y'),
-            w: xml.attr(sprite, 'w'),
-            h: xml.attr(sprite, 'h'),
+            x: parseInt(xml.attr(sprite, 'x')),
+            y: parseInt(xml.attr(sprite, 'y')),
+            w: parseInt(xml.attr(sprite, 'w')),
+            h: parseInt(xml.attr(sprite, 'h')),
           };
           spritesData.push(spriteData);
+          let yOffset = height-spriteData.h;
+          let xAdvance = spriteData.w + +2;
+
+          listChar += '\n<char id="'+ spriteData.name.split('.')[0] +'" x="' + spriteData.x + '" y="' + spriteData.y + '" width="' + spriteData.w + '" height="' + spriteData.h + '" ' +
+            'xoffset="1" yoffset="' + yOffset + '" xadvance="' + xAdvance + '" page="0" chnl="15"/>';
         });
-        let output = `
-          <font>
-            <info face="{faceName}" size="63" bold="0" italic="0" charset="" unicode="" stretchH="100" smooth="1" aa="1" padding="0,0,0,0" spacing="0,0" outline="0"/>
-            <common lineHeight="{height}" base="{base}" scaleW="{width}" scaleH="{height}" pages="1" packed="0"/>
-            <pages>
-              <page id="0" file="{fileName}"/>
-            </pages>
-            <chars count="{counter}">
-            {listChar}
-            </chars>
-            <kernings count="1">
-              <kerning first="49" second="49" amount="-2"/>
-            </kernings>
-          </font>`;
-        let outXml = parser.parseFromString(output, 'text/xml');
 
-        outXml.getElementsByTagName('font')[0].appendChild(info);
+        output = StringUtils.replaceAll(output, '{faceName}', this.fontFace);
+        output = StringUtils.replaceAll(output, '{height}', height);
+        output = StringUtils.replaceAll(output, '{width}', width);
+        output = StringUtils.replaceAll(output, '{base}', 30);
+        output = StringUtils.replaceAll(output, '{fileName}', imagePath);
+        output = StringUtils.replaceAll(output, '{counter}', sprites.length);
+        output = StringUtils.replaceAll(output, '{listChar}', listChar);
+        // let outXml = parser.parseFromString(output, 'text/xml');
 
-        this.outputXml = new XMLSerializer().serializeToString(outXml.documentElement);
+        // outXml.getElementsByTagName('font')[0].appendChild(info);
+
+        this.outputXml = output;
       },
     },
   };
