@@ -14,7 +14,7 @@ http://www.theasciicode.com.ar/ascii-printable-characters/comma-ascii-code-44.ht
 
 2- Add to texture package -> export as XML (Generic), got 2 file, 1 spritesheet and 1 xml
 
-3- copy content of xml file to http://thupv.com/TexturePackerXMLToFNT/#/
+3- copy content of xml file to https://thupv.github.io/convert-texture-packer-xml-to-fnt
 
 4- enter font name
 
